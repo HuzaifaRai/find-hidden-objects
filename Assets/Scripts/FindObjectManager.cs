@@ -163,6 +163,8 @@ public class FindObjectManager : MonoBehaviour
     IEnumerator HintObj()
     {
         // Ensure we are within bounds
+        if(currentHintIndex >= itemsPlaced.Length) hintButton.interactable = false;
+        print(currentHintIndex);
         while (currentHintIndex < itemsPlaced.Length)
         {
             GameObject currentObject = itemsPlaced[currentHintIndex];
