@@ -26,10 +26,7 @@ public class LevelSelection : MonoBehaviour
     public GameObject needMoreCoins;
     public GameObject videoNotAvalible;
     public GameObject loadingPanel;
-    public CoinsAdder coinsAdder; 
-    
-    
-    public Image fillBar;
+   public Image fillBar;
     public Image fillImage;
     [Range(4, 10)]
     public float TimeToLoad; 
@@ -51,7 +48,7 @@ public class LevelSelection : MonoBehaviour
             GameManager.Instance.Initialized = true;
             Rai_SaveLoad.LoadProgress();
         }
-        
+        GameManager.Instance.TotalMode = levels.Length;
         #region Initialing Mode
         if (ModeScroller)
         {
@@ -239,20 +236,20 @@ public class LevelSelection : MonoBehaviour
     public void ClaimRewardedCoins()
     {
         GetRewardedCoinsPanel.SetActive(false);
-        StartCoroutine(AddCoins(0, 2000));
+        //StartCoroutine(AddCoins(0, 2000));
         if (AudioManager.Instance) AudioManager.Instance.purchaseSFX.Play();
     }
     #endregion
 
-    IEnumerator AddCoins(float delay, int Coins)
-    {
-        yield return new WaitForSeconds(delay);
-        if (coinsAdder)
-        {
-            coinsAdder.addCoins = Coins;
-            coinsAdder.addNow = true;
-        }
-    }
+    //IEnumerator AddCoins(float delay, int Coins)
+    //{
+    //    yield return new WaitForSeconds(delay);
+    //    if (coinsAdder)
+    //    {
+    //        coinsAdder.addCoins = Coins;
+    //        coinsAdder.addNow = true;
+    //    }
+    //}
 
     #region videoPanelOf
     public void videoPanelOf()

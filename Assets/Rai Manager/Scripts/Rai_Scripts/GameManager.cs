@@ -22,6 +22,7 @@ public class GameManager
 	public bool canShowFirstOpenAd = false;
 	public bool Initialized = false;
 	public string modeName;
+    public int TotalMode;
     public int ModeIndex = 0;
     public int dailyRewardCoins;
 

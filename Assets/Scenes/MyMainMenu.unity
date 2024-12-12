@@ -4706,9 +4706,33 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 11400094, guid: 4f0e1815f9c4b0841aa273bbb5aacbb2, type: 3}
+      propertyPath: rewards.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 079950e000273d9448dac4474486e6fa, type: 3}
+    - target: {fileID: 11400094, guid: 4f0e1815f9c4b0841aa273bbb5aacbb2, type: 3}
+      propertyPath: rewards.Array.data[1].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 079950e000273d9448dac4474486e6fa, type: 3}
+    - target: {fileID: 11400094, guid: 4f0e1815f9c4b0841aa273bbb5aacbb2, type: 3}
+      propertyPath: rewards.Array.data[2].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 079950e000273d9448dac4474486e6fa, type: 3}
+    - target: {fileID: 11400094, guid: 4f0e1815f9c4b0841aa273bbb5aacbb2, type: 3}
+      propertyPath: rewards.Array.data[3].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 079950e000273d9448dac4474486e6fa, type: 3}
+    - target: {fileID: 11400094, guid: 4f0e1815f9c4b0841aa273bbb5aacbb2, type: 3}
+      propertyPath: rewards.Array.data[4].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 079950e000273d9448dac4474486e6fa, type: 3}
+    - target: {fileID: 11400094, guid: 4f0e1815f9c4b0841aa273bbb5aacbb2, type: 3}
       propertyPath: rewards.Array.data[5].reward
       value: 5000
       objectReference: {fileID: 0}
+    - target: {fileID: 11400094, guid: 4f0e1815f9c4b0841aa273bbb5aacbb2, type: 3}
+      propertyPath: rewards.Array.data[5].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 079950e000273d9448dac4474486e6fa, type: 3}
     - target: {fileID: 11400098, guid: 4f0e1815f9c4b0841aa273bbb5aacbb2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

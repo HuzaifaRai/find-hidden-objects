@@ -128,6 +128,11 @@ public class FindObjectManager : MonoBehaviour
 
     public void Next(string str)
     {
+        if(GameManager.Instance.ModeIndex > GameManager.Instance.TotalMode)
+        {
+            GameManager.Instance.ModeIndex++;
+            SaveData.Instance.modeProps.ModeLocked[GameManager.Instance.ModeIndex] = false;
+        }
         if (AudioManager.Instance) AudioManager.Instance.BtnSfx.Play();
         loadingPanel.gameObject.SetActive(true);
         showinterstitial();
@@ -163,8 +168,6 @@ public class FindObjectManager : MonoBehaviour
     IEnumerator HintObj()
     {
         // Ensure we are within bounds
-        if(currentHintIndex >= itemsPlaced.Length) hintButton.interactable = false;
-        print(currentHintIndex);
         while (currentHintIndex < itemsPlaced.Length)
         {
             GameObject currentObject = itemsPlaced[currentHintIndex];
@@ -179,6 +182,7 @@ public class FindObjectManager : MonoBehaviour
                     float initialPosY = currentObject.transform.localPosition.y;
 
                     currentObject.transform.parent = tempParent.transform;
+                    BG.transform.GetChild(0).gameObject.SetActive(true);
                     yield return new WaitForSeconds(0.1f);
 
                     Content.transform.parent = currentObject.transform;
@@ -190,6 +194,7 @@ public class FindObjectManager : MonoBehaviour
                     Content.transform.parent = ViewPort.transform.parent;
                     yield return new WaitForSeconds(0.1f);
 
+                    BG.transform.GetChild(0).gameObject.SetActive(false);
                     currentObject.transform.parent = BG.transform;
                     currentObject.transform.localPosition = new Vector3(initialPosX, initialPosY);
 
@@ -208,6 +213,12 @@ public class FindObjectManager : MonoBehaviour
                 {
                     Debug.Log($"Object at index {currentHintIndex} is already found. Moving to the next one.");
                     currentHintIndex++;
+                    if (currentHintIndex >= itemsPlaced.Length - 1)
+                    {
+                        hintButton.interactable = false;
+                        hintButton.GetComponent<MRS_Manager>().enabled = false;
+                        hintButton.gameObject.SetActive(false);
+                    }
                 }
             }
             else
@@ -347,13 +358,16 @@ public class FindObjectManager : MonoBehaviour
 
     IEnumerator loadAd()
     {
-        if (adPanel) adPanel.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1f);
-        if (adPanel) adPanel.gameObject.SetActive(false);
-        yield return new WaitForSeconds(0.1f);
         if (MyAdsManager.Instance)
         {
-            MyAdsManager.Instance.ShowInterstitialAds();
+            if (MyAdsManager.Instance.IsInterstitialAvailable())
+            {
+                if (adPanel) adPanel.gameObject.SetActive(true);
+                yield return new WaitForSeconds(1f);
+                if (adPanel) adPanel.gameObject.SetActive(false);
+                yield return new WaitForSeconds(0.1f);
+                MyAdsManager.Instance.ShowInterstitialAds();
+            }
         }
     }
 

@@ -17,9 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelSelection.unity
     guid: eb86eec312b2bf646859fe8721fc8874
-  - enabled: 0
-    path: 
-    guid: 88c4a92cec7bb3c4e85bc107f2aae3fd
   - enabled: 1
     path: Assets/Scenes/hiddenobjects/1. findobjects.unity
     guid: 22c6deb12afb135458e8c6a884f9fd9b
