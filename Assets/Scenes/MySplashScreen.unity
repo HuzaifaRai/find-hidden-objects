@@ -264,6 +264,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &613371782 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5949257937033971183, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
+  m_PrefabInstance: {fileID: 1354538506}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &802622091 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6272044909027739132, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
+  m_PrefabInstance: {fileID: 1354538506}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1334891218
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,22 +426,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1346459400}
     m_Modifications:
-    - target: {fileID: 1051213008271984296, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1051213008271984296, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1051213008271984296, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2627266688374183898, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
-      propertyPath: m_Name
-      value: FillImage
-      objectReference: {fileID: 0}
     - target: {fileID: 5694295201248527692, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -519,6 +513,10 @@ PrefabInstance:
     - target: {fileID: 5694295201248527693, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
       propertyPath: m_Name
       value: LoadingBG
+      objectReference: {fileID: 0}
+    - target: {fileID: 5694295201248527693, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 469a578ef04f6ce4a9883635c5eefbf2, type: 3}
@@ -671,11 +669,11 @@ PrefabInstance:
     - target: {fileID: 5586875426187465249, guid: 2a8e94bc471140c468a2a92bd8f01a91, type: 3}
       propertyPath: cpIcons.Array.data[0]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 802622091}
     - target: {fileID: 5586875426187465249, guid: 2a8e94bc471140c468a2a92bd8f01a91, type: 3}
       propertyPath: cpIcons.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 613371782}
     - target: {fileID: 5586875426187465250, guid: 2a8e94bc471140c468a2a92bd8f01a91, type: 3}
       propertyPath: m_Name
       value: CrossPromotionManager

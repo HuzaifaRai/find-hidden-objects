@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VersionComparisonResult = MaxSdkUtils.VersionComparisonResult;
 
 namespace AppLovinMax.Scripts.IntegrationManager.Editor
 {
@@ -43,8 +44,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
         private const string expandButtonText = "+";
         private const string collapseButtonText = "-";
-
-        private const string externalDependencyManagerPath = "Assets/ExternalDependencyManager";
 
         private readonly string[] termsFlowPlatforms = new string[3] {"Both", "Android", "iOS"};
         private readonly string[] debugUserGeographies = new string[2] {"Not Set", "GDPR"};
@@ -78,6 +77,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
         private PluginData pluginData;
         private bool pluginDataLoadFailed;
+        private bool isPluginMoved;
         private bool shouldShowGoogleWarning;
         private bool networkButtonsEnabled = true;
 
@@ -147,6 +147,9 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             var warningIconData = File.ReadAllBytes(MaxSdkUtils.GetAssetPathForExportPath(warningIconExportPath));
             warningIcon = new Texture2D(0, 0, TextureFormat.RGBA32, false);
             warningIcon.LoadImage(warningIconData);
+
+            var pluginPath = Path.Combine(AppLovinIntegrationManager.PluginParentDirectory, "MaxSdk");
+            isPluginMoved = !AppLovinIntegrationManager.DefaultPluginExportPath.Equals(pluginPath);
         }
 
         private void OnEnable()
@@ -238,14 +241,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                     DrawMediatedNetworks();
                 }
 
-#if UNITY_2019_2_OR_NEWER
-                if (!AppLovinIntegrationManager.IsPluginInPackageManager)
-                {
-                    EditorGUILayout.LabelField("Unity Package Manager Migration", titleLabelStyle);
-                    DrawPluginMigrationHelper();
-                }
-#endif
-
                 // Draw AppLovin Quality Service settings
                 DrawCollapsableSection(keyShowSdkSettings, "SDK Settings", DrawQualityServiceSettings);
 
@@ -336,7 +331,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 {
                     var appLovinMax = pluginData.AppLovinMax;
                     // Check if a newer version is available to enable the upgrade button.
-                    var upgradeButtonEnabled = appLovinMax.CurrentToLatestVersionComparisonResult == Versions.VersionComparisonResult.Lesser;
+                    var upgradeButtonEnabled = appLovinMax.CurrentToLatestVersionComparisonResult == VersionComparisonResult.Lesser;
                     DrawPluginDetailRow("Unity 3D", appLovinMax.CurrentVersions.Unity, appLovinMax.LatestVersions.Unity);
                     DrawPluginDetailRow("Android", appLovinMax.CurrentVersions.Android, appLovinMax.LatestVersions.Android);
                     DrawPluginDetailRow("iOS", appLovinMax.CurrentVersions.Ios, appLovinMax.LatestVersions.Ios);
@@ -348,7 +343,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                     GUI.enabled = upgradeButtonEnabled;
                     if (GUILayout.Button(new GUIContent("Upgrade"), fieldWidth))
                     {
-                        AppLovinEditorCoroutine.StartCoroutine(AppLovinPackageManager.AddNetwork(pluginData.AppLovinMax, true));
+                        AppLovinEditorCoroutine.StartCoroutine(AppLovinIntegrationManager.Instance.DownloadPlugin(appLovinMax));
                     }
 
                     GUI.enabled = true;
@@ -483,13 +478,13 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
                 var comparison = network.CurrentToLatestVersionComparisonResult;
                 // A newer version is available
-                if (comparison == Versions.VersionComparisonResult.Lesser)
+                if (comparison == VersionComparisonResult.Lesser)
                 {
                     action = "Upgrade";
                     isActionEnabled = true;
                 }
                 // Current installed version is newer than latest version from DB (beta version)
-                else if (comparison == Versions.VersionComparisonResult.Greater)
+                else if (comparison == VersionComparisonResult.Greater)
                 {
                     action = "Installed";
                     isActionEnabled = false;
@@ -525,7 +520,8 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 GUI.enabled = networkButtonsEnabled && isActionEnabled;
                 if (GUILayout.Button(new GUIContent(action), fieldWidth))
                 {
-                    AppLovinEditorCoroutine.StartCoroutine(AppLovinPackageManager.AddNetwork(network, true));
+                    // Download the plugin.
+                    AppLovinEditorCoroutine.StartCoroutine(AppLovinIntegrationManager.Instance.DownloadPlugin(network));
                 }
 
                 GUI.enabled = true;
@@ -535,7 +531,18 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 if (GUILayout.Button(new GUIContent {image = uninstallIcon, tooltip = "Uninstall"}, iconStyle))
                 {
                     EditorUtility.DisplayProgressBar("Integration Manager", "Deleting " + network.Name + "...", 0.5f);
-                    AppLovinPackageManager.RemoveNetwork(network);
+                    var pluginRoot = AppLovinIntegrationManager.MediationSpecificPluginParentDirectory;
+                    foreach (var pluginFilePath in network.PluginFilePaths)
+                    {
+                        var filePath = Path.Combine(pluginRoot, pluginFilePath);
+                        FileUtil.DeleteFileOrDirectory(filePath);
+                        FileUtil.DeleteFileOrDirectory(filePath + ".meta");
+                    }
+
+                    AppLovinIntegrationManager.UpdateCurrentVersions(network, pluginRoot);
+
+                    // Refresh UI
+                    AssetDatabase.Refresh();
                     EditorUtility.ClearProgressBar();
                 }
 
@@ -555,10 +562,11 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             if (network.Name.Equals("ADMOB_NETWORK"))
             {
                 // Show only one set of text boxes if both ADMOB and GAM are installed
-                if (AppLovinPackageManager.IsAdapterInstalled(pluginData, "GOOGLE_AD_MANAGER_NETWORK")) return;
+                if (AppLovinIntegrationManager.IsAdapterInstalled("GoogleAdManager")) return;
 
                 DrawGoogleAppIdTextBox();
             }
+
             // Custom integration for GAM where the user can enter the Android and iOS App IDs.
             else if (network.Name.Equals("GOOGLE_AD_MANAGER_NETWORK"))
             {
@@ -597,55 +605,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             GUI.enabled = true;
             GUILayout.Space(10);
         }
-
-#if UNITY_2019_2_OR_NEWER
-        private void DrawPluginMigrationHelper()
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(10);
-            using (new EditorGUILayout.VerticalScope("box"))
-            {
-                GUILayout.Space(5);
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(4);
-                EditorGUILayout.LabelField(new GUIContent("This will migrate the AppLovin MAX Unity Plugin and adapters to the Unity Package Manager."), wrapTextLabelStyle);
-                GUILayout.Space(4);
-                GUILayout.EndHorizontal();
-
-                GUI.enabled = true;
-                GUILayout.Space(3);
-                GUILayout.FlexibleSpace();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(10);
-                var migrationText = "Upgrade All Adapters and Migrate to UPM";
-                if (GUILayout.Button(new GUIContent(migrationText)))
-                {
-                    if (EditorUtility.DisplayDialog("Migrate to UPM?",
-                            "Are you sure you want to migrate the SDK and adapters to UPM? This action will move both the MAX SDK and its adapters.", "Yes", "No"))
-                    {
-                        var deleteExternalDependencyManager = false;
-                        if (Directory.Exists(externalDependencyManagerPath))
-                        {
-                            deleteExternalDependencyManager = EditorUtility.DisplayDialog("External Dependency Manager Detected",
-                                "Our plugin includes the External Dependency Manager via the Unity Package Manager. Would you like us to automatically remove the existing External Dependency Manager folder, or would you prefer to manage it manually?", "Remove Automatically", "Manage Manually");
-                        }
-
-                        AppLovinPluginMigrationHelper.MigrateToUnityPackageManager(pluginData, deleteExternalDependencyManager);
-                    }
-                }
-
-                GUILayout.Space(10);
-                GUILayout.EndHorizontal();
-
-                GUILayout.Space(5);
-                EditorGUILayout.HelpBox("Ensure all changes are committed before migration.", MessageType.Warning);
-            }
-
-            GUILayout.Space(5);
-            GUILayout.EndHorizontal();
-        }
-#endif
 
         private void DrawQualityServiceSettings()
         {
@@ -1101,7 +1060,8 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
         private void OnImportPackageCompleted(Network network)
         {
-            AppLovinPackageManager.UpdateCurrentVersions(network);
+            var parentDirectory = network.Name.Equals("APPLOVIN_NETWORK") ? AppLovinIntegrationManager.PluginParentDirectory : AppLovinIntegrationManager.MediationSpecificPluginParentDirectory;
+            AppLovinIntegrationManager.UpdateCurrentVersions(network, parentDirectory);
 
             UpdateShouldShowGoogleWarningIfNeeded();
         }
@@ -1142,9 +1102,9 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             {
                 var comparison = network.CurrentToLatestVersionComparisonResult;
                 // A newer version is available
-                if (!string.IsNullOrEmpty(network.CurrentVersions.Unity) && comparison == Versions.VersionComparisonResult.Lesser)
+                if (!string.IsNullOrEmpty(network.CurrentVersions.Unity) && comparison == VersionComparisonResult.Lesser)
                 {
-                    yield return AppLovinPackageManager.AddNetwork(network, false);
+                    yield return AppLovinIntegrationManager.Instance.DownloadPlugin(network, false);
                 }
             }
 
@@ -1163,7 +1123,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             if (pluginData == null || pluginData.AppLovinMax.CurrentVersions == null) return false;
 
             var networks = pluginData.MediatedNetworks;
-            return networks.Any(network => !string.IsNullOrEmpty(network.CurrentVersions.Unity) && network.CurrentToLatestVersionComparisonResult == Versions.VersionComparisonResult.Lesser);
+            return networks.Any(network => !string.IsNullOrEmpty(network.CurrentVersions.Unity) && network.CurrentToLatestVersionComparisonResult == VersionComparisonResult.Lesser);
         }
 
         #endregion

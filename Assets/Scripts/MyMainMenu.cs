@@ -17,14 +17,6 @@ public class MyMainMenu : MonoBehaviour
     public GameObject RewardPanel;
     public GameObject NeedMoreCoinsPanel;
     public Text TotalCoins;
-    //public GameObject AvatarPanel;
-    //public Text mainName;
-    //public InputField editorName;
-    //public Image mainAvatar;
-    //public Image editorAvatar;
-    //public GameObject AvatarScroller;
-    //public Sprite[] avatars;
-    //private List<ItemInfo> avatarList = new List<ItemInfo>();
     public CoinsAdder coinsAdder;
     [Header("Loading")]
     public Image fillBar;
@@ -43,33 +35,6 @@ public class MyMainMenu : MonoBehaviour
             GameManager.Instance.Initialized = true;
             Rai_SaveLoad.LoadProgress();
         }
-        //if (SaveData.Instance.ProfileCreated == false)
-        //{
-        //    editorName.text = mainName.text = SaveData.Instance.ProfileName;
-        //    editorAvatar.sprite = mainAvatar.sprite = avatars[SaveData.Instance.SelectedPlayerAvatar];
-        //    AvatarPanel.SetActive(true);
-        //}
-        //Rai_SaveLoad.SaveProgress();
-        //if (AvatarScroller)
-        //{
-        //    var avatarinfo = AvatarScroller.GetComponentsInChildren<ItemInfo>();
-        //    for (int i = 0; i < avatarinfo.Length; i++)
-        //    {
-        //        avatarList.Add(avatarinfo[i]);
-        //        avatarList[i].itemBtn.GetComponent<Image>().sprite = avatars[i];
-        //    }
-        //    for (int i = 0; i < avatarList.Count; i++)
-        //    {
-        //        int Index = i;
-        //        if (avatarList[i].itemBtn)
-        //        {
-        //            avatarList[i].itemBtn.onClick.AddListener(() =>
-        //            {
-        //                Avatar(Index);
-        //            });
-        //        }
-        //    }
-        //}
     }
     #region EnableDisable
     void OnEnable()
@@ -92,25 +57,9 @@ public class MyMainMenu : MonoBehaviour
     {
         if (AudioManager.Instance) AudioManager.Instance.BtnSfx.Play();
         SaveData.Instance.ProfileCreated = true;
-        //AvatarPanel.SetActive(false);
-        //mainAvatar.sprite = avatars[SaveData.Instance.SelectedPlayerAvatar];
-        //SaveData.Instance.ProfileName = mainName.text = editorName.text;
+
         Rai_SaveLoad.SaveProgress();
     }
-    //public void Avatar(int num)
-    //{
-    //    for (int i = 0; i < avatarList.Count; i++)
-    //    {
-    //        avatarList[i].TickIcon.gameObject.SetActive(false);
-    //    }
-    //    avatarList[num].TickIcon.gameObject.SetActive(true);
-    //    SaveData.Instance.SelectedPlayerAvatar = num;
-    //    editorAvatar.gameObject.SetActive(false);
-    //    editorAvatar.gameObject.SetActive(true);
-    //    editorAvatar.sprite = avatars[SaveData.Instance.SelectedPlayerAvatar];
-    //    if (AudioManager.Instance) AudioManager.Instance.itemSelectSFX.Play();
-    //    Rai_SaveLoad.SaveProgress();
-    //}
 
 
     public void SettingIsTrue(bool IsTrue)

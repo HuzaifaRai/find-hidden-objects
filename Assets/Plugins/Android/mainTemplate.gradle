@@ -5,6 +5,9 @@
         maven {
             url "https://maven.google.com"
         }
+        maven {
+            url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea" // Assets/MaxSdk/Mediation/Mintegral/Editor/Dependencies.xml:8
+        }
         mavenLocal()
         mavenCentral()
     }
@@ -16,6 +19,8 @@ apply plugin: 'com.android.library'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 // Android Resolver Dependencies Start
+    implementation 'androidx.recyclerview:recyclerview:1.2.1' // Assets/MaxSdk/Mediation/Mintegral/Editor/Dependencies.xml:9
+    implementation 'com.applovin.mediation:mintegral-adapter:16.9.11.0' // Assets/MaxSdk/Mediation/Mintegral/Editor/Dependencies.xml:8
     implementation 'com.applovin:applovin-sdk:13.0.0' // Assets/MaxSdk/AppLovin/Editor/Dependencies.xml:4
     implementation 'com.google.android.gms:play-services-appset:16.0.2' // Assets/GameAnalytics/Editor/Android/Dependencies.xml:4
     implementation 'com.google.android.instantapps:instantapps:1.1.0' // Assets/GameAnalytics/Editor/Android/Dependencies.xml:3

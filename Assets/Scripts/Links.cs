@@ -9,17 +9,17 @@ public class Links : MonoBehaviour
 
     public void MoreGames()
     {
-        Application.OpenURL("https://play.google.com/store/apps/developer?id=Innovative+Games+Studio&hl=en_UShttps://play.google.com/store/apps/developer?id=Innovative+Games+Studio&hl=en_US");
+        Application.OpenURL("https://www.amazon.com/s?i=mobile-apps&rh=p_4%3AImmortal%2BTech&search-type=ss");
         if(AudioManager.Instance) AudioManager.Instance.BtnSfx.Play();
     }
     public void RateUS()
     {
-        Application.OpenURL("https://play.google.com/store/apps/details?id=com.innovative.dolldressup.makeover.games");
+        Application.OpenURL("http://www.amazon.com/gp/mas/dl/android?p=com.immortal.hiddenobjects.puzzle.games");
         if(AudioManager.Instance) AudioManager.Instance.BtnSfx.Play();
     }
     public void PP()
     {
-        Application.OpenURL("https://play.google.com/store/apps/developer?id=Innovative+Games+Studio&hl=en_US");
+        Application.OpenURL("https://immortaltechs.blogspot.com/2024/02/immortal-tech.html");
         if(AudioManager.Instance) AudioManager.Instance.BtnSfx.Play();
     }
 

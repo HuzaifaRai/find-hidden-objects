@@ -57,6 +57,7 @@ public class FindObjectManager : MonoBehaviour
 
     private void Start()
     {
+        if (GAManager.Instance) GAManager.Instance.LogDesignEvent("Scene:" + SceneManager.GetActiveScene().name + SceneManager.GetActiveScene().buildIndex);
         hintButton.onClick.AddListener(() =>
         {
             HintOnAdd();

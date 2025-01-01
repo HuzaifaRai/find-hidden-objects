@@ -44,12 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 393052d8b8d320a4591f31d6fc666ce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adsType: 0
+  adsType: 1
   applovinBannerPosition: 1
   MaxSdkKey: b5S_xzGyH6k_T5DC__ylE8gr1cZixaNtwP74CaZts2nUMCBZWvtWC1UgWlK6cH8786hFCu1KuELw3UZStlVuES
-  BannerAdUnitId: ENTER_BANNER_AD_UNIT_ID_HERE
-  InterstitialAdUnitId: ENTER_INTERSTITIAL_AD_UNIT_ID_HERE
-  RewardedAdUnitId: ENTER_REWARD_AD_UNIT_ID_HERE
+  BannerAdUnitId: bd6716980b4bdc02
+  InterstitialAdUnitId: cdf594ee55fed32a
+  RewardedAdUnitId: 8ead3329dd89846c
   RewardedInterstitialAdUnitId: ENTER_REWARD_INTER_AD_UNIT_ID_HERE
   MRecAdUnitId: ENTER_MREC_AD_UNIT_ID_HERE
   isDebugLog: 0

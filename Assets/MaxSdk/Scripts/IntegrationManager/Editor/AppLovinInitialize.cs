@@ -70,10 +70,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             "MaxSdk/Scripts/MaxVariableServiceUnityEditor.cs",
             "MaxSdk/Scripts/MaxVariableServiceUnityEditor.cs.meta",
 
-            // The `MaxSdk/Scripts/Editor` folder contents have been moved into `MaxSdk/Scripts/IntegrationManager/Editor`.
-            "MaxSdk/Version.md",
-            "MaxSdk/Version.md.meta",
-
             // TODO: Add MaxTargetingData and MaxUserSegment when the plugin has enough traction.
         };
 
@@ -88,9 +84,9 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 #endif
 
             var pluginParentDir = AppLovinIntegrationManager.PluginParentDirectory;
-            var isPluginInPackageManager = AppLovinIntegrationManager.IsPluginInPackageManager;
-            var changesMade = AppLovinIntegrationManager.MovePluginFilesIfNeeded(pluginParentDir, isPluginInPackageManager);
-            if (isPluginInPackageManager)
+            var isPluginOutsideAssetsDir = AppLovinIntegrationManager.IsPluginOutsideAssetsDirectory;
+            var changesMade = AppLovinIntegrationManager.MovePluginFilesIfNeeded(pluginParentDir, isPluginOutsideAssetsDir);
+            if (isPluginOutsideAssetsDir)
             {
                 // If the plugin is not under the assets folder, delete the MaxSdk/Mediation folder in the plugin, so that the adapters are not imported at that location and imported to the default location.
                 var mediationDir = Path.Combine(pluginParentDir, "MaxSdk/Mediation");

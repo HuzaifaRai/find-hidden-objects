@@ -72,6 +72,15 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
         private static readonly XNamespace AndroidNamespace = "http://schemas.android.com/apk/res/android";
 
+        private static string PluginMediationDirectory
+        {
+            get
+            {
+                var pluginParentDir = AppLovinIntegrationManager.MediationSpecificPluginParentDirectory;
+                return Path.Combine(pluginParentDir, "MaxSdk/Mediation/");
+            }
+        }
+
         public void OnPostGenerateGradleAndroidProject(string path)
         {
 #if UNITY_2019_3_OR_NEWER
@@ -214,7 +223,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
         private static void AddGoogleApplicationIdIfNeeded(XElement elementApplication, IEnumerable<XElement> metaDataElements)
         {
-            if (!AppLovinPackageManager.IsAdapterInstalled("Google") && !AppLovinPackageManager.IsAdapterInstalled("GoogleAdManager")) return;
+            if (!AppLovinIntegrationManager.IsAdapterInstalled("Google") && !AppLovinIntegrationManager.IsAdapterInstalled("GoogleAdManager")) return;
 
             var googleApplicationIdMetaData = GetMetaDataElement(metaDataElements, KeyMetaDataGoogleApplicationId);
             var appId = AppLovinSettings.Instance.AdMobAndroidAppId;
@@ -239,7 +248,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
         private static void AddGoogleOptimizationFlagsIfNeeded(XElement elementApplication, IEnumerable<XElement> metaDataElements)
         {
-            if (!AppLovinPackageManager.IsAdapterInstalled("Google") && !AppLovinPackageManager.IsAdapterInstalled("GoogleAdManager")) return;
+            if (!AppLovinIntegrationManager.IsAdapterInstalled("Google") && !AppLovinIntegrationManager.IsAdapterInstalled("GoogleAdManager")) return;
 
             var googleOptimizeInitializationMetaData = GetMetaDataElement(metaDataElements, KeyMetaDataGoogleOptimizeInitialization);
             // If meta data doesn't exist, add it
@@ -258,7 +267,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
         private static void DisableAutoInitIfNeeded(XElement elementApplication, IEnumerable<XElement> metaDataElements)
         {
-            if (AppLovinPackageManager.IsAdapterInstalled("MobileFuse"))
+            if (AppLovinIntegrationManager.IsAdapterInstalled("MobileFuse"))
             {
                 var mobileFuseMetaData = GetMetaDataElement(metaDataElements, KeyMetaDataMobileFuseAutoInit);
                 // If MobileFuse meta data doesn't exist, add it
@@ -268,7 +277,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 }
             }
 
-            if (AppLovinPackageManager.IsAdapterInstalled("MyTarget"))
+            if (AppLovinIntegrationManager.IsAdapterInstalled("MyTarget"))
             {
                 var myTargetMetaData = GetMetaDataElement(metaDataElements, KeyMetaDataMyTargetAutoInit);
                 // If MyTarget meta data doesn't exist, add it
@@ -309,7 +318,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             {
 #if UNITY_2022_3_OR_NEWER
                 // Unity 2022.3+ requires Gradle Plugin version 7.1.2+.
-                if (AppLovinIntegrationManagerUtils.CompareVersions(customGradleToolsVersion, "7.1.2") == Versions.VersionComparisonResult.Lesser)
+                if (MaxSdkUtils.CompareVersions(customGradleToolsVersion, "7.1.2") == MaxSdkUtils.VersionComparisonResult.Lesser)
                 {
                     MaxSdkLogger.E("Failed to set gradle plugin version. Unity 2022.3+ requires gradle plugin version 7.1.2+");
                     return;
